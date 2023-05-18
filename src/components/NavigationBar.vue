@@ -13,6 +13,8 @@
           class="fa-solid fa-circle-info cursor-pointer hover:text-weater-secondry duration-200"
         ></i>
         <i
+          v-if="route.query.preview"
+          @click="addCity()"
           class="fa-solid fa-plus cursor-pointer hover:text-weater-secondry duration-200"
         ></i>
       </div>
@@ -51,9 +53,40 @@
 </template>
 
 <script setup>
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import ModalWindow from "./ModalWindow.vue";
 import { ref } from "vue";
+import { uid } from "uid";
+
+const arrayCities = ref([]);
+
+const route = useRoute();
+const router = useRouter();
+
+const addCity = () => {
+  if (localStorage.getItem("cities")) {
+    arrayCities.value = JSON.parse(localStorage.getItem("cities"));
+  }
+
+  const newInfo = {
+    id: uid(),
+    city: route.params.cityname,
+    state: route.params.statename,
+    lonAndLat: {
+      lat: route.query.lat,
+      lon: route.query.lng,
+    },
+  };
+
+  arrayCities.value.push(newInfo);
+
+  localStorage.setItem("cities", JSON.stringify(arrayCities.value));
+
+  let query = Object.assign({}, route.query); // for  remove preperty preview
+  delete query.preview;
+  query.id = newInfo.id;
+  router.replace({ query });
+};
 
 const modelBounce = ref(null);
 const showModel = () => {

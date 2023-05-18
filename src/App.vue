@@ -1,7 +1,11 @@
 <template>
   <div class="bg-weater-primary min-h-screen font-Roboto">
     <NavigationBar />
-    <RouterView />
+    <RouterView class="flex-1" v-slot="{ Component }">
+      <Transition name="page">
+        <component :is="Component" />
+      </Transition>
+    </RouterView>
   </div>
 </template>
 
@@ -10,4 +14,12 @@ import { RouterView } from "vue-router";
 import NavigationBar from "@/components/NavigationBar.vue";
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+.page-enter-active {
+  transition: 600ms ease all;
+}
+
+.page-enter-from {
+  opacity: 0;
+}
+</style>

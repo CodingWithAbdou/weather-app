@@ -6,11 +6,11 @@
         v-model="searchValue"
         type="text"
         placeholder="Search for a city or state"
-        class="border-b bg-transparent focus:border-weater-secondry focus:outline-none w-full mt-6 py-4 px-6 focus:shadow-sm"
+        class="border-b bg-transparent focus:border-weater-secondry focus:outline-none w-full mt-6 py-4 px-6 focus:shadow-sm duration-100 ease-in"
       />
       <ul
         v-if="mapboxResults"
-        class="absolute w-full mt-3 bg-weater-secondry p-2 rounded-sm"
+        class="absolute w-full mt-3 bg-weater-secondry rounded-sm"
       >
         <p v-if="showError" class="py-2">
           Sorry, something went wrong, please try again.
@@ -23,12 +23,22 @@
             @click="goToCity(mapboxResult)"
             v-for="mapboxResult in mapboxResults"
             :key="mapboxResult.id"
-            class="py-2 text-opacity-80 cursor-pointer"
+            class="py-4 px-6 text-opacity-80 cursor-pointer hover:text-weater-secondry hover:bg-white duration-100 ease"
           >
             {{ mapboxResult.place_name }}
           </li>
         </template>
       </ul>
+    </div>
+    <div class="flex flex-col gap-4">
+      <Suspense>
+        <template #default>
+          <ListCities />
+        </template>
+        <template #fallback>
+          <AnimationListCity />
+        </template>
+      </Suspense>
     </div>
   </main>
 </template>
@@ -37,6 +47,9 @@
 import { ref } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+
+import ListCities from "../components/ListCities.vue";
+import AnimationListCity from "../components/AnimationListCity.vue";
 
 const router = useRouter();
 
@@ -60,6 +73,7 @@ const searchValue = ref(null);
 const timeAfterTypeing = ref(null);
 const mapboxResults = ref(null);
 const showError = ref(null);
+
 const mapboxAPIKey =
   "pk.eyJ1Ijoiam9obmtvbWFybmlja2kiLCJhIjoiY2t5NjFzODZvMHJkaDJ1bWx6OGVieGxreSJ9.IpojdT3U3NENknF6_WhR2Q";
 
